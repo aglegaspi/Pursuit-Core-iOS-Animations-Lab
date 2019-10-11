@@ -10,24 +10,23 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    //MARK: - PROGRAMMATIC VIEWS
+//MARK: - PROGRAMMATIC VIEWS
     lazy var blueSquare: UIView = {
         let view = UIView()
         view.backgroundColor = .blue
         return view
     }()
     
-        //MARK: - BUTTONS & STACK VIEWS
+    //MARK: - UP & DOWN BUTTONS & STACK VIEWS
     lazy var buttonStackView: UIStackView = {
         let buttonStack = UIStackView()
         buttonStack.axis = .horizontal
         buttonStack.alignment = .center
         buttonStack.distribution = .equalSpacing
-        buttonStack.spacing = 30
+        buttonStack.spacing = 5
         return buttonStack
     }()
     
-    /// UP & DOWN BUTTONS
     lazy var upButton: UIButton = {
         let button = UIButton()
         button.setTitle("Move square up", for: .normal)
@@ -46,7 +45,17 @@ class ViewController: UIViewController {
         return button
     }()
     
-    /// LEFT & RIGHT BUTTONS
+    //MARK: - RIGHT & LEFT BUTTONS & STACK VIEWS
+    
+    lazy var buttonStackViewLR: UIStackView = {
+        let buttonStack = UIStackView()
+        buttonStack.axis = .horizontal
+        buttonStack.alignment = .center
+        buttonStack.distribution = .equalSpacing
+        buttonStack.spacing = 5
+        return buttonStack
+    }()
+    
     lazy var leftButton: UIButton = {
         let button = UIButton()
         button.setTitle("Move square left", for: .normal)
@@ -135,14 +144,15 @@ class ViewController: UIViewController {
         view.addSubview(blueSquare)
         addStackViewSubviews()
         view.addSubview(buttonStackView)
+        view.addSubview(buttonStackViewLR)
         view.addSubview(animationStepper)
     }
     
     private func addStackViewSubviews() {
         buttonStackView.addSubview(upButton)
         buttonStackView.addSubview(downButton)
-        buttonStackView.addSubview(leftButton)
-        buttonStackView.addSubview(rightButton)
+        buttonStackViewLR.addSubview(leftButton)
+        buttonStackViewLR.addSubview(rightButton)
     }
     
     private func configureConstraints() {
@@ -152,6 +162,7 @@ class ViewController: UIViewController {
         constrainLeftButton()
         constrainRightButton()
         constrainButtonStackView()
+        constrainButtonStackViewLR()
         constrainAnimationStepper()
     }
     
@@ -171,13 +182,13 @@ class ViewController: UIViewController {
     private func constrainLeftButton() {
         leftButton.translatesAutoresizingMaskIntoConstraints = false
         
-        leftButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
-        leftButton.trailingAnchor.constraint(equalTo: buttonStackView.trailingAnchor).isActive = true
+        leftButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        leftButton.trailingAnchor.constraint(equalTo: buttonStackViewLR.trailingAnchor).isActive = true
     }
     
     private func constrainRightButton() {
         rightButton.translatesAutoresizingMaskIntoConstraints = false
-        rightButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        rightButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
     
     /// CONSTRAINTS FOR SQUARE
@@ -201,14 +212,23 @@ class ViewController: UIViewController {
         ])
     }
     
+    private func constrainButtonStackViewLR() {
+        buttonStackViewLR.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            buttonStackViewLR.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            buttonStackViewLR.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200),
+            buttonStackViewLR.heightAnchor.constraint(equalToConstant: 50),
+            buttonStackViewLR.widthAnchor.constraint(equalTo: view.widthAnchor),
+        ])
+    }
+    
     private func constrainAnimationStepper() {
         animationStepper.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            animationStepper.topAnchor.constraint(lessThanOrEqualToSystemSpacingBelow: blueSquare.bottomAnchor, multiplier: 1.0)
-            // need to add additional constraints
-    
-           
+            animationStepper.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            animationStepper.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            
         ])
         
     }
