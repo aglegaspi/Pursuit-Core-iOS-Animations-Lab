@@ -47,8 +47,9 @@ class ViewController: UIViewController {
     //MARK: - STEPPERS
     lazy var animationStepper: UIStepper = {
         let stepper = UIStepper()
-        stepper.minimumValue = 2
+        stepper.minimumValue = 0
         stepper.maximumValue = 5
+        stepper.addTarget(self, action: #selector(animationStepperPressed), for: .valueChanged)
         return stepper
     }()
     
@@ -79,7 +80,7 @@ class ViewController: UIViewController {
     @IBAction func animateSquareUp(sender: UIButton) {
         let oldOffset = blueSquareCenterYConstraint.constant
         blueSquareCenterYConstraint.constant = oldOffset - 150
-        UIView.animate(withDuration: 2) { [unowned self] in
+        UIView.animate(withDuration: animationStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
     }
@@ -87,7 +88,7 @@ class ViewController: UIViewController {
     @IBAction func animateSquareDown(sender: UIButton) {
         let oldOffet = blueSquareCenterYConstraint.constant
         blueSquareCenterYConstraint.constant = oldOffet + 150
-        UIView.animate(withDuration: 2) { [unowned self] in
+        UIView.animate(withDuration: animationStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
     }
@@ -157,6 +158,13 @@ class ViewController: UIViewController {
     }
     
     //MARK: - OBJ-C FUNCTIONS
+    
+    @objc func animationStepperPressed(_ stepper: UIStepper) {
+        
+        animationStepper.value += 1
+        print("Chnaged Value: \(animationStepper.value)")
+        animationStepper.value -= 1
+    }
 }
 
 
