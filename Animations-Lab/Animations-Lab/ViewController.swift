@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    //MARK: - PROGRAMMATIC VIEWS
     lazy var blueSquare: UIView = {
         let view = UIView()
         view.backgroundColor = .blue
@@ -17,7 +18,7 @@ class ViewController: UIViewController {
     }()
     
     lazy var buttonStackView: UIStackView = {
-       let buttonStack = UIStackView()
+        let buttonStack = UIStackView()
         buttonStack.axis = .horizontal
         buttonStack.alignment = .center
         buttonStack.distribution = .equalSpacing
@@ -26,7 +27,7 @@ class ViewController: UIViewController {
     }()
     
     lazy var upButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setTitle("Move square up", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .cyan
@@ -35,13 +36,22 @@ class ViewController: UIViewController {
     }()
     
     lazy var downButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setTitle("Move square down", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .cyan
         button.addTarget(self, action: #selector(animateSquareDown(sender:)), for: .touchUpInside)
         return button
     }()
+    
+    //MARK: - STEPPERS
+    lazy var animationStepper: UIStepper = {
+        let stepper = UIStepper()
+        stepper.minimumValue = 2
+        stepper.maximumValue = 5
+        return stepper
+    }()
+    
     
     lazy var blueSquareHeightConstaint: NSLayoutConstraint = {
         blueSquare.heightAnchor.constraint(equalToConstant: 200)
@@ -65,6 +75,7 @@ class ViewController: UIViewController {
         configureConstraints()
     }
     
+    //MARK: - IBACTIONS
     @IBAction func animateSquareUp(sender: UIButton) {
         let oldOffset = blueSquareCenterYConstraint.constant
         blueSquareCenterYConstraint.constant = oldOffset - 150
@@ -81,10 +92,12 @@ class ViewController: UIViewController {
         }
     }
     
+    //MARK: - PRIVATE FUNCTIONS
     private func addSubviews() {
         view.addSubview(blueSquare)
         addStackViewSubviews()
         view.addSubview(buttonStackView)
+        view.addSubview(animationStepper)
     }
     
     private func addStackViewSubviews() {
@@ -97,6 +110,7 @@ class ViewController: UIViewController {
         constrainUpButton()
         constrainDownButton()
         constrainButtonStackView()
+        constrainAnimationStepper()
     }
     
     private func constrainUpButton() {
@@ -129,6 +143,20 @@ class ViewController: UIViewController {
             buttonStackView.widthAnchor.constraint(equalTo: view.widthAnchor),
         ])
     }
+    
+    private func constrainAnimationStepper() {
+        animationStepper.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            animationStepper.topAnchor.constraint(lessThanOrEqualToSystemSpacingBelow: blueSquare.bottomAnchor, multiplier: 1.0)
+            // need to add additional constraints
+    
+           
+        ])
+        
+    }
+    
+    //MARK: - OBJ-C FUNCTIONS
 }
 
 
