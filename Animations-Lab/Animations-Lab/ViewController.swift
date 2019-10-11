@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         return view
     }()
     
-    //MARK: - UP & DOWN BUTTONS & STACK VIEWS
+    //MARK: - STACKVIEW U&D
     lazy var buttonStackView: UIStackView = {
         let buttonStack = UIStackView()
         buttonStack.axis = .horizontal
@@ -45,7 +45,7 @@ class ViewController: UIViewController {
         return button
     }()
     
-    //MARK: - RIGHT & LEFT BUTTONS & STACK VIEWS
+    //MARK: - STACKVIEW L&R
     
     lazy var buttonStackViewLR: UIStackView = {
         let buttonStack = UIStackView()
@@ -74,14 +74,28 @@ class ViewController: UIViewController {
         return button
     }()
     
-        //MARK: - STEPPERS
+    //MARK: - STEPPERS
     lazy var animationStepper: UIStepper = {
         let stepper = UIStepper()
+        stepper.value = 2
         stepper.minimumValue = 0
         stepper.maximumValue = 5
         stepper.addTarget(self, action: #selector(animationStepperPressed), for: .valueChanged)
         return stepper
     }()
+    
+    lazy var distanceStepper: UIStepper = {
+        let stepper = UIStepper()
+        stepper.value = 50
+        stepper.stepValue = 10
+        stepper.minimumValue = 50
+        stepper.maximumValue = 200
+        stepper.addTarget(self, action: #selector(distanceStepperPressed), for: .valueChanged)
+        return stepper
+    }()
+    
+    
+    
     
     
     lazy var blueSquareHeightConstaint: NSLayoutConstraint = {
@@ -106,10 +120,14 @@ class ViewController: UIViewController {
         configureConstraints()
     }
     
+    
+    
+    
+    
     //MARK: - IBACTIONS
     @IBAction func animateSquareUp(sender: UIButton) {
         let oldOffset = blueSquareCenterYConstraint.constant
-        blueSquareCenterYConstraint.constant = oldOffset - 150
+        blueSquareCenterYConstraint.constant = oldOffset - CGFloat(distanceStepper.value)
         UIView.animate(withDuration: animationStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
@@ -117,7 +135,7 @@ class ViewController: UIViewController {
     
     @IBAction func animateSquareDown(sender: UIButton) {
         let oldOffet = blueSquareCenterYConstraint.constant
-        blueSquareCenterYConstraint.constant = oldOffet + 150
+        blueSquareCenterYConstraint.constant = oldOffet + CGFloat(distanceStepper.value)
         UIView.animate(withDuration: animationStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
@@ -125,7 +143,7 @@ class ViewController: UIViewController {
     
     @IBAction func animateSquareLeft(sender: UIButton) {
         let oldOffet = blueSquareCenterXConstraint.constant
-        blueSquareCenterXConstraint.constant = oldOffet - 150
+        blueSquareCenterXConstraint.constant = oldOffet - CGFloat(distanceStepper.value)
         UIView.animate(withDuration: animationStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
@@ -133,11 +151,13 @@ class ViewController: UIViewController {
     
     @IBAction func animateSquareRight(sender: UIButton) {
         let oldOffet = blueSquareCenterXConstraint.constant
-        blueSquareCenterXConstraint.constant = oldOffet + 150
+        blueSquareCenterXConstraint.constant = oldOffet + CGFloat(distanceStepper.value)
         UIView.animate(withDuration: animationStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
     }
+    
+    
     
     //MARK: - PRIVATE FUNCTIONS
     private func addSubviews() {
@@ -146,6 +166,7 @@ class ViewController: UIViewController {
         view.addSubview(buttonStackView)
         view.addSubview(buttonStackViewLR)
         view.addSubview(animationStepper)
+        view.addSubview(distanceStepper)
     }
     
     private func addStackViewSubviews() {
@@ -157,13 +178,17 @@ class ViewController: UIViewController {
     
     private func configureConstraints() {
         constrainBlueSquare()
+        
         constrainUpButton()
         constrainDownButton()
         constrainLeftButton()
         constrainRightButton()
+        
         constrainButtonStackView()
         constrainButtonStackViewLR()
+        
         constrainAnimationStepper()
+        constrainDistanceStepper()
     }
     
     /// CONSTRAINTS FOR BUTTONS
@@ -227,19 +252,35 @@ class ViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             animationStepper.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-            animationStepper.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
-            
+            animationStepper.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0)
         ])
-        
     }
     
-    //MARK: - OBJ-C FUNCTIONS
-    
-    @objc func animationStepperPressed(_ stepper: UIStepper) {
+    private func constrainDistanceStepper() {
+        distanceStepper.translatesAutoresizingMaskIntoConstraints = false
         
+        NSLayoutConstraint.activate([
+            distanceStepper.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            distanceStepper.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0)
+        ])
+    }
+    
+    
+    
+    
+    
+    
+    //MARK: - OBJ-C FUNCTIONS
+    @objc func animationStepperPressed(_ stepper: UIStepper) {
         animationStepper.value += 1
-        print("Chnaged Value: \(animationStepper.value)")
         animationStepper.value -= 1
+        print("Changed Value: \(animationStepper.value)")
+    }
+    
+    @objc func distanceStepperPressed(_ stepper: UIStepper) {
+        distanceStepper.value += 1
+        distanceStepper.value -= 1
+        print("Distance Value: \(animationStepper.value)")
     }
 }
 
